@@ -1,5 +1,4 @@
 import React from 'react';
-import { Bell, Search, User, Wallet } from 'lucide-react';
 
 interface NavbarProps {
   address: string | null;
@@ -8,47 +7,51 @@ interface NavbarProps {
 
 const Navbar = ({ address, onConnect }: NavbarProps) => {
   return (
-    <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-10">
-      <div className="flex items-center gap-4 flex-1">
-        <div className="relative max-w-md w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input
+    <header className="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-3xl flex justify-between items-center h-20 px-8 md:pl-80">
+      <div className="flex items-center flex-grow max-w-2xl">
+        <div className="relative w-full hidden md:block">
+          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+          <input 
+            className="w-full bg-surface-container-low border-none rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 text-sm font-medium transition-all" 
+            placeholder="Search transactions, NGOs, or blocks..." 
             type="text"
-            placeholder="Search transactions, NGOs..."
-            className="w-full bg-slate-50 border-none rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-emerald-500/20 transition-all"
           />
         </div>
       </div>
 
-      <div className="flex items-center gap-6">
-        <button className="relative p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white" />
-        </button>
+      <div className="flex items-center gap-6 ml-8">
+        <div className="hidden lg:flex items-center gap-6">
+          <a className="text-primary border-b-2 border-primary font-semibold py-1 text-sm" href="#">Dashboard</a>
+          <a className="text-on-surface-variant hover:text-primary transition-colors font-semibold text-sm" href="#">History</a>
+          <a className="text-on-surface-variant hover:text-primary transition-colors font-semibold text-sm" href="#">Reports</a>
+        </div>
 
-        {address ? (
-          <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-xl border border-slate-200">
-            <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
-              <Wallet className="w-4 h-4 text-emerald-600" />
-            </div>
-            <div className="text-left">
-              <p className="text-xs text-slate-500 font-medium">Connected Wallet</p>
-              <p className="text-sm font-bold text-slate-900">
-                {address.slice(0, 6)}...{address.slice(-4)}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <button
-            onClick={onConnect}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-emerald-200"
-          >
-            Connect Wallet
+        <div className="flex items-center gap-2 bg-surface-container-highest px-4 py-2 rounded-full">
+          <span className="material-symbols-outlined text-primary text-sm">account_balance_wallet</span>
+          <span className="text-xs font-mono font-bold">
+            {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '0x000...000'}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <button className="p-2 text-on-surface-variant hover:text-primary transition-colors">
+            <span className="material-symbols-outlined">notifications</span>
           </button>
-        )}
-
-        <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
-          <User className="w-6 h-6 text-slate-400" />
+          {!address && (
+            <button 
+              onClick={onConnect}
+              className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold hover:opacity-90 transition-all active:scale-95"
+            >
+              Connect
+            </button>
+          )}
+          <div className="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant/30">
+            <img 
+              alt="User Avatar" 
+              className="w-full h-full object-cover" 
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCho7WfwXxhKu31q4pBcUXOuEQW1LwIvUyrQustt6d_dVU72F3O2DaSNMbRMa1Ltaz0E8K-ptTZ2VIIWU1pJ6ZQxAQewkYBLZU3LMiAoeqoNMkWqgNrUINqGlzY12nqZfVYNadHq80dRyMOgeP2gtz8NJVZmuF1CAw3KxAE6dKFiUD9-UJtS3ufitOd_scsRQBP-8IvV6bqDBOvlfhAzlefhmnax0ELBp4gyb-nmepZvKDEJ9QxllLweS7QGx6LqaOfzwWzO5mgwA"
+            />
+          </div>
         </div>
       </div>
     </header>

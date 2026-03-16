@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Send, Info, AlertCircle } from 'lucide-react';
-import { ethers, parseEther } from 'ethers';
-import { getContract } from '../blockchain/contract';
 
 interface SendFundsProps {
   signer: any;
@@ -27,21 +24,12 @@ const SendFunds = ({ signer, onTransactionComplete }: SendFundsProps) => {
     setError(null);
 
     try {
-      // In a real app, we would call the contract
-      // const contract = getContract(signer);
-      // const tx = await contract.donate(purpose, { value: parseEther(amount) });
-      // await tx.wait();
-
-      // Mocking transaction delay
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      console.log('Transaction sent:', { recipient, amount, purpose });
       onTransactionComplete();
       setRecipient('');
       setAmount('');
       alert('Transaction Successful!');
     } catch (err: any) {
-      console.error(err);
       setError(err.message || 'Transaction failed');
     } finally {
       setLoading(false);
@@ -49,94 +37,127 @@ const SendFunds = ({ signer, onTransactionComplete }: SendFundsProps) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-[2.5rem] p-10 border border-slate-200 shadow-xl"
-      >
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-200">
-            <Send className="text-white w-7 h-7" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900">Send Funds</h2>
-            <p className="text-slate-500 font-medium">Transfer ETH for social impact</p>
-          </div>
+    <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12">
+      <section className="flex-1">
+        <div className="mb-10">
+          <h2 className="text-4xl font-bold tracking-tight text-on-surface">Send Funds</h2>
+          <p className="text-on-surface-variant mt-2">Transfer assets securely across the transparent ledger.</p>
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-slate-700 ml-1">Recipient Address</label>
-            <input
-              type="text"
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-              placeholder="0x..."
-              required
-              className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm focus:border-emerald-500 focus:ring-0 transition-all font-mono"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700 ml-1">Amount (ETH)</label>
-              <input
-                type="number"
-                step="0.0001"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="0.00"
-                required
-                className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm focus:border-emerald-500 focus:ring-0 transition-all"
-              />
+        <div className="bg-surface-container-lowest rounded-[2rem] p-8 shadow-[0px_12px_32px_-4px_rgba(0,0,0,0.04)]">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Recipient */}
+            <div>
+              <label className="block text-sm font-bold text-on-surface-variant mb-3 uppercase tracking-wider">Recipient Address</label>
+              <div className="relative group">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">person_search</span>
+                <input 
+                  className="w-full bg-surface-container-low border-none rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all placeholder:text-outline" 
+                  placeholder="Wallet address or @username" 
+                  type="text"
+                  value={recipient}
+                  onChange={(e) => setRecipient(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mt-3 flex gap-2">
+                <button type="button" onClick={() => setRecipient('0x71c...8a2')} className="px-4 py-1.5 bg-surface-container-high rounded-full text-xs font-semibold text-on-surface-variant hover:bg-surface-container-highest transition-colors">Recent: 0x71c...8a2</button>
+                <button type="button" onClick={() => setRecipient('@humanity_aid')} className="px-4 py-1.5 bg-surface-container-high rounded-full text-xs font-semibold text-on-surface-variant hover:bg-surface-container-highest transition-colors">Recent: @humanity_aid</button>
+              </div>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700 ml-1">Purpose</label>
-              <select
+
+            {/* Amount & Currency */}
+            <div>
+              <label className="block text-sm font-bold text-on-surface-variant mb-3 uppercase tracking-wider">Amount to Transfer</label>
+              <div className="flex gap-4">
+                <div className="relative flex-1 group">
+                  <input 
+                    className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 text-2xl font-bold focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all placeholder:text-outline" 
+                    placeholder="0.00" 
+                    type="number"
+                    step="0.0001"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    required
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-on-surface-variant">ETH</span>
+                </div>
+                <div className="w-32">
+                  <select className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 font-bold text-primary focus:ring-2 focus:ring-primary/20 transition-all appearance-none cursor-pointer">
+                    <option>ETH</option>
+                    <option>USDC</option>
+                    <option>BTC</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Purpose Dropdown */}
+            <div>
+              <label className="block text-sm font-bold text-on-surface-variant mb-3 uppercase tracking-wider">Purpose of Transaction</label>
+              <select 
                 value={purpose}
                 onChange={(e) => setPurpose(e.target.value)}
-                className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm focus:border-emerald-500 focus:ring-0 transition-all appearance-none"
+                className="w-full bg-surface-container-low border-none rounded-xl py-4 px-4 font-medium text-on-surface focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
               >
                 <option>Donation</option>
-                <option>Micro-loan</option>
-                <option>Aid distribution</option>
-                <option>Flood Relief</option>
+                <option>Loan Payment</option>
+                <option>Humanitarian Aid</option>
+                <option>Personal Transfer</option>
+                <option>Service Payment</option>
               </select>
             </div>
-          </div>
 
-          {error && (
-            <div className="bg-rose-50 border border-rose-100 text-rose-600 p-4 rounded-2xl flex items-center gap-3 text-sm font-medium">
-              <AlertCircle className="w-5 h-5" />
-              {error}
+            {/* Transaction Summary Card */}
+            <div className="bg-surface-container-low rounded-2xl p-6">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-sm text-on-surface-variant font-medium">Network Fee (Gas)</span>
+                <span className="text-sm text-on-surface font-bold">~0.00042 ETH</span>
+              </div>
+              <div className="flex justify-between items-center pt-4 border-t border-outline-variant/20">
+                <span className="text-base text-on-surface font-bold">Total Execution Cost</span>
+                <span className="text-xl text-primary font-black">{amount ? (parseFloat(amount) + 0.00042).toFixed(5) : '0.00042'} ETH</span>
+              </div>
             </div>
-          )}
 
-          <div className="bg-emerald-50 p-4 rounded-2xl flex gap-3">
-            <Info className="w-5 h-5 text-emerald-600 shrink-0" />
-            <p className="text-xs text-emerald-700 font-medium leading-relaxed">
-              Your transaction will be processed through the Ethos Smart Contract. 
-              A 0.5% protocol fee is applied to maintain the platform.
-            </p>
+            {error && <p className="text-error text-sm font-bold">{error}</p>}
+
+            {/* CTA */}
+            <button 
+              disabled={loading}
+              className="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-5 rounded-2xl text-lg font-bold shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-3" 
+              type="submit"
+            >
+              {loading ? (
+                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  <span className="material-symbols-outlined">verified_user</span>
+                  Review & Send Funds
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <aside className="w-full lg:w-80 space-y-6">
+        <div className="bg-surface-container-high rounded-3xl p-6">
+          <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
+            <span className="material-symbols-outlined text-primary">security</span>
           </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-lg shadow-emerald-100 flex items-center justify-center gap-2"
-          >
-            {loading ? (
-              <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              <>
-                Confirm Transaction
-                <Send className="w-5 h-5" />
-              </>
-            )}
-          </button>
-        </form>
-      </motion.div>
+          <h3 className="text-lg font-bold text-on-surface mb-3">Security Checklist</h3>
+          <ul className="space-y-4">
+            <li className="flex gap-3">
+              <span className="material-symbols-outlined text-secondary text-lg">check_circle</span>
+              <p className="text-sm text-on-surface-variant">Verify the recipient's address character by character.</p>
+            </li>
+            <li className="flex gap-3">
+              <span className="material-symbols-outlined text-secondary text-lg">check_circle</span>
+              <p className="text-sm text-on-surface-variant">Check network congestion for gas fee fluctuations.</p>
+            </li>
+          </ul>
+        </div>
+      </aside>
     </div>
   );
 };

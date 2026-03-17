@@ -7,7 +7,11 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const Sidebar = () => {
+interface SidebarProps {
+  onConnect: () => void;
+}
+
+const Sidebar = ({ onConnect }: SidebarProps) => {
   const navItems = [
     { to: '/', icon: 'dashboard', label: 'Dashboard' },
     { to: '/send', icon: 'send', label: 'Send Funds' },
@@ -49,7 +53,10 @@ const Sidebar = () => {
       </nav>
 
       <div className="px-4 py-6 mt-auto">
-        <button className="w-full bg-primary text-white rounded-xl py-3 font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/20">
+        <button 
+          onClick={onConnect}
+          className="w-full bg-primary text-white rounded-xl py-3 font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/20"
+        >
           Connect New Wallet
         </button>
         <div className="flex items-center gap-3 mt-8 pt-6 border-t border-surface-container-highest">

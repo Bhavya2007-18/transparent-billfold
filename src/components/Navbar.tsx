@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface NavbarProps {
   address: string | null;
@@ -21,9 +22,9 @@ const Navbar = ({ address, onConnect }: NavbarProps) => {
 
       <div className="flex items-center gap-6 ml-8">
         <div className="hidden lg:flex items-center gap-6">
-          <a className="text-primary border-b-2 border-primary font-semibold py-1 text-sm" href="#">Dashboard</a>
-          <a className="text-on-surface-variant hover:text-primary transition-colors font-semibold text-sm" href="#">History</a>
-          <a className="text-on-surface-variant hover:text-primary transition-colors font-semibold text-sm" href="#">Reports</a>
+          <Link className="text-primary border-b-2 border-primary font-semibold py-1 text-sm" to="/">Dashboard</Link>
+          <Link className="text-on-surface-variant hover:text-primary transition-colors font-semibold text-sm" to="/history">History</Link>
+          <Link className="text-on-surface-variant hover:text-primary transition-colors font-semibold text-sm" to="/reports">Reports</Link>
         </div>
 
         <div className="flex items-center gap-2 bg-surface-container-highest px-4 py-2 rounded-full">

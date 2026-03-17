@@ -49,7 +49,6 @@ export default function App() {
         timestamp: Date.now() - 10000,
       },
     ]);
-    setWallet(prev => ({ ...prev, balance: '12450.00' }));
   }, []);
 
   const handleConnect = async () => {
@@ -85,20 +84,32 @@ export default function App() {
 
   useEffect(() => {
     if (window.ethereum) {
-      window.ethereum.on('accountsChanged', (accounts: string[]) => {
+      const handleAccountsChanged = (accounts: string[]) => {
         if (accounts.length > 0) {
           handleConnect();
         } else {
           setWallet({ address: null, balance: '0.00', isConnected: false });
           setSigner(null);
         }
-      });
+      };
+
+      const handleChainChanged = () => {
+        window.location.reload();
+      };
+
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+      window.ethereum.on('chainChanged', handleChainChanged);
+
+      return () => {
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
+      };
     }
   }, []);
 
   return (
     <div className="min-h-screen bg-surface">
-      <Sidebar />
+      <Sidebar onConnect={handleConnect} />
       <Navbar address={wallet.address} onConnect={handleConnect} />
       
       <main className="md:pl-72 pt-20 min-h-screen">

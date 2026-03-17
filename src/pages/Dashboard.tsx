@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Transaction } from '../types';
 import { motion } from 'motion/react';
 
@@ -30,14 +31,20 @@ const Dashboard = ({ balance, address, transactions }: DashboardProps) => {
             <p className="text-xs text-on-surface-variant mt-2 font-mono">Last updated: 32 seconds ago (Block #18,452,901)</p>
           </div>
           <div className="flex gap-4 mt-8 relative z-10">
-            <button className="bg-primary text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-on-primary-fixed-variant transition-all active:scale-[0.98] shadow-lg shadow-primary/20">
+            <Link 
+              to="/send"
+              className="bg-primary text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-on-primary-fixed-variant transition-all active:scale-[0.98] shadow-lg shadow-primary/20"
+            >
               <span className="material-symbols-outlined">north_east</span>
               Send Funds
-            </button>
-            <button className="bg-surface-container-highest text-on-surface px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-surface-container-high transition-all active:scale-[0.98]">
+            </Link>
+            <Link 
+              to="/receive"
+              className="bg-surface-container-highest text-on-surface px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-surface-container-high transition-all active:scale-[0.98]"
+            >
               <span className="material-symbols-outlined">south_west</span>
               Receive
-            </button>
+            </Link>
           </div>
         </section>
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
+import { parseEther } from 'ethers';
 
 interface SendFundsProps {
   signer: any;
@@ -12,6 +13,7 @@ const SendFunds = ({ signer, onTransactionComplete }: SendFundsProps) => {
   const [purpose, setPurpose] = useState('Donation');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,19 +24,42 @@ const SendFunds = ({ signer, onTransactionComplete }: SendFundsProps) => {
 
     setLoading(true);
     setError(null);
+    setSuccess(false);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const tx = await signer.sendTransaction({
+        to: recipient,
+        value: parseEther(amount)
+      });
+      
+      await tx.wait();
+      
       onTransactionComplete();
       setRecipient('');
       setAmount('');
-      alert('Transaction Successful!');
+      setSuccess(true);
     } catch (err: any) {
-      setError(err.message || 'Transaction failed');
+      console.error("Transaction error:", err);
+      setError(err.reason || err.message || 'Transaction failed');
     } finally {
       setLoading(false);
     }
   };
+
+  if (!signer) {
+    return (
+      <div className="max-w-xl mx-auto text-center py-20">
+        <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <span className="material-symbols-outlined text-4xl text-primary">account_balance_wallet</span>
+        </div>
+        <h2 className="text-2xl font-bold mb-4">Wallet Not Connected</h2>
+        <p className="text-on-surface-variant mb-8">You need to connect your wallet to send funds on the blockchain.</p>
+        <div className="p-4 bg-surface-container-low rounded-xl text-sm text-on-surface-variant italic">
+          Please use the "Connect" button in the navigation bar to get started.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12">
@@ -120,6 +145,12 @@ const SendFunds = ({ signer, onTransactionComplete }: SendFundsProps) => {
             </div>
 
             {error && <p className="text-error text-sm font-bold">{error}</p>}
+            {success && (
+              <div className="p-4 bg-secondary/10 rounded-xl flex items-center gap-3 text-secondary">
+                <span className="material-symbols-outlined">check_circle</span>
+                <p className="text-sm font-bold">Transaction Successful! The ledger has been updated.</p>
+              </div>
+            )}
 
             {/* CTA */}
             <button 
